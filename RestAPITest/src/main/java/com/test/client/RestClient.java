@@ -3,6 +3,7 @@ package com.test.client;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.client.ClientProtocolException;
@@ -16,29 +17,27 @@ import org.json.JSONObject;
 
 public class RestClient {
 
-	// GET Method
-	public void get(String url) throws ClientProtocolException, IOException {
+	// GET Method without headers
+	public CloseableHttpResponse get(String url) throws ClientProtocolException, IOException {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet(url);
-		// httpClient.execute(httpGet);
+		CloseableHttpResponse closablehhtpresponse = httpClient.execute(httpGet);
+		return closablehhtpresponse;
+	}
+
+	// GET Method with headers
+	public CloseableHttpResponse get(String url, HashMap<String, String> headerMap)
+			throws ClientProtocolException, IOException {
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet(url);
+
+		for (Map.Entry<String, String> entry : headerMap.entrySet()) {
+
+			httpGet.addHeader(entry.getKey(), entry.getValue());
+		}
 
 		CloseableHttpResponse closablehhtpresponse = httpClient.execute(httpGet);
+		return closablehhtpresponse;
 
-		// Status code
-		int statusCode = closablehhtpresponse.getStatusLine().getStatusCode();
-		System.out.println("The Respons Code is" + statusCode);
-
-		// JSONString
-		String responseString = EntityUtils.toString(closablehhtpresponse.getEntity(), "UTF-8");
-		JSONObject responsejsonObject = new JSONObject(responseString);
-		System.out.println("Response JSON From API" + responsejsonObject);
-		Header[] headerArray = closablehhtpresponse.getAllHeaders();
-
-		HashMap<String, String> allHeaders = new HashMap<String, String>();
-		for (Header header : headerArray) {
-			allHeaders.put(header.getName(), header.getValue());
-
-		}
-		System.out.println("All Headers as " + allHeaders);
 	}
 }
