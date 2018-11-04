@@ -1,4 +1,4 @@
-package com.test.getapitest;
+package com.test.responsetest;
 
 import java.io.IOException;
 import java.util.HashMap;
